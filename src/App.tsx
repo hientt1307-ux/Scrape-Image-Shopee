@@ -84,7 +84,7 @@ export default function App() {
             S
           </div>
           <div>
-            <h1 className="text-xl font-extrabold text-[#065f46] tracking-tight leading-none">Shopee Image Extractor</h1>
+            <h1 className="text-xl font-extrabold text-[#065f46] tracking-tight leading-none">Shopee Image Scraper</h1>
             <p className="text-[12px] text-slate-500 font-medium">V4 API Standalone Tool</p>
           </div>
         </div>
