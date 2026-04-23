@@ -93,6 +93,11 @@ async function startServer() {
     }
   });
 
+  // Ping endpoint for anti-coldstart
+  app.get("/api/ping", (req, res) => {
+    res.status(200).send("pong");
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
@@ -110,6 +115,20 @@ async function startServer() {
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    
+    // Anti-coldstart mechanism for Render free tier
+    const RENDER_EXTERNAL_URL = process.env.RENDER_EXTERNAL_URL;
+    if (RENDER_EXTERNAL_URL) {
+      console.log(`Anti-coldstart enabled. Pinging ${RENDER_EXTERNAL_URL}/api/ping every 5 minutes.`);
+      setInterval(async () => {
+        try {
+          await axios.get(`${RENDER_EXTERNAL_URL}/api/ping`);
+          console.log(`[Anti-coldstart] Ping to ${RENDER_EXTERNAL_URL} successful.`);
+        } catch (error: any) {
+          console.error(`[Anti-coldstart] Ping failed:`, error.message);
+        }
+      }, 5 * 60 * 1000); // 5 minutes
+    }
   });
 }
 
